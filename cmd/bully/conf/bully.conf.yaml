@@ -1,0 +1,16 @@
+---
+
+# BULLY.CONF
+# --
+# This file is the default configuration file for the Bully program.
+#
+
+# Peers addresses.
+#
+# NOTE: key represents a peer's ID, value represents its address.
+peer_address:
+    - "0": "0.0.0.0:9990"
+    - "1": "0.0.0.0:9991"
+    - "2": "0.0.0.0:9992"
+    - "3": "0.0.0.0:9993"
+    - "4": "0.0.0.0:9994"
