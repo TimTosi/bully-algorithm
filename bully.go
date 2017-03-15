@@ -11,13 +11,6 @@ import (
 
 // -----------------------------------------------------------------------------
 
-// Peer is a `struct` representing a remote `Bully`.
-type Peer struct {
-	ID   string
-	addr string
-	sock *gob.Encoder
-}
-
 // Bully is a `struct` representing a single node used by the `Bully Algorithm`.
 //
 // NOTE: More details about the `Bully algorithm` can be found here
@@ -28,7 +21,7 @@ type Bully struct {
 	ID           string
 	addr         string
 	coordinator  string
-	peers        map[string]Peer
+	peers        Peers
 	mu           *sync.RWMutex
 	receiveChan  chan Message
 	electionChan chan Message
@@ -42,8 +35,9 @@ func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 		ID:           ID,
 		addr:         addr,
 		coordinator:  ID,
+		peers:        NewPeerMap(),
 		mu:           &sync.RWMutex{},
-		electionChan: make(chan Message, 0),
+		electionChan: make(chan Message, 1),
 		receiveChan:  make(chan Message, 0),
 	}
 
@@ -72,13 +66,18 @@ func (b *Bully) receive(rwc io.ReadWriteCloser) {
 		if err := dec.Decode(&msg); err == io.EOF || msg.Type == CLOSE {
 			_ = rwc.Close()
 			if msg.PeerID == b.Coordinator() {
-				delete(b.peers, msg.PeerID)
+				b.peers.Delete(msg.PeerID)
 				b.SetCoordinator(b.ID)
 				b.Elect()
 			}
 			break
 		} else if msg.Type == OK {
-			b.electionChan <- msg
+			select {
+			case b.electionChan <- msg:
+				continue
+			case <-time.After(10 * time.Millisecond):
+				continue
+			}
 		} else {
 			b.receiveChan <- msg
 		}
@@ -129,15 +128,13 @@ func (b *Bully) connect(proto, addr, ID string) error {
 		return err
 	}
 
-	b.peers[ID] = Peer{ID: ID, addr: addr, sock: gob.NewEncoder(sock)}
+	b.peers.Add(ID, addr, sock)
 	return nil
 }
 
 // Connect performs a connection to the remote `Peer`s and returns an `error`
 // if something occurs during connection.
 func (b *Bully) Connect(proto string, peers map[string]string) (err error) {
-	b.peers = make(map[string]Peer)
-
 	for ID, addr := range peers {
 		if b.ID == ID {
 			continue
@@ -156,12 +153,12 @@ func (b *Bully) Connect(proto string, peers map[string]string) (err error) {
 func (b *Bully) Send(to, addr string, what int) error {
 	maxRetries := 5
 
-	if _, ok := b.peers[to]; !ok {
+	if !b.peers.Find(to) {
 		_ = b.connect("tcp4", addr, to)
 	}
 
 	for attempts := 0; ; attempts++ {
-		err := b.peers[to].sock.Encode(&Message{PeerID: b.ID, Addr: b.addr, Type: what})
+		err := b.peers.Write(to, &Message{PeerID: b.ID, Addr: b.addr, Type: what})
 		if err == nil {
 			break
 		}
@@ -201,9 +198,9 @@ func (b *Bully) Coordinator() string {
 
 // Elect handles the leader election mechanism of the `Bully algorithm`.
 func (b *Bully) Elect() {
-	for ID, rBully := range b.peers {
-		if ID > b.ID {
-			_ = b.Send(ID, rBully.addr, ELECTION)
+	for _, rBully := range b.peers.PeerData() {
+		if rBully.ID > b.ID {
+			_ = b.Send(rBully.ID, rBully.Addr, ELECTION)
 		}
 	}
 
@@ -212,16 +209,17 @@ func (b *Bully) Elect() {
 		return
 	case <-time.After(time.Second):
 		b.SetCoordinator(b.ID)
-		for ID, rBully := range b.peers {
-			if ID < b.ID {
-				_ = b.Send(ID, rBully.addr, COORDINATOR)
+		for _, rBully := range b.peers.PeerData() {
+			if rBully.ID < b.ID {
+				_ = b.Send(rBully.ID, rBully.Addr, COORDINATOR)
 			}
 		}
 		return
 	}
 }
 
-// Run launches the two main goroutine. tied to coordination
+// Run launches the two main goroutine. The first one is tied to the
+// `Bully algorithm` while the other one is the execution of `workFunc`.
 func (b *Bully) Run(workFunc func()) chan error {
 	errChan := make(chan error)
 
