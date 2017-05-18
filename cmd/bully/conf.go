@@ -11,6 +11,7 @@ import (
 
 const (
 	confFile     = "bully.conf"
+	confDataAddr = "data_server_address"
 	confPeerAddr = "peer_address"
 )
 
@@ -21,6 +22,7 @@ var (
 // -----------------------------------------------------------------------------
 
 func init() {
+	viper.SetDefault(confDataAddr, "127.0.0.1:8081")
 	viper.SetDefault(confPeerAddr, map[string]string{
 		"0": "0.0.0.0:9990",
 		"1": "0.0.0.0:9991",
@@ -28,6 +30,7 @@ func init() {
 		"3": "0.0.0.0:9993",
 		"4": "0.0.0.0:9994",
 	})
+
 	viper.SetConfigName(confFile)
 	for _, p := range confPath {
 		viper.AddConfigPath(p)
