@@ -12,7 +12,7 @@ const (
 
 // -----------------------------------------------------------------------------
 
-// Message is a structure used within communication between `Bully`s.
+// Message is a `struct` used for communication between `Bully`s.
 type Message struct {
 	PeerID string
 	Addr   string
