@@ -5,6 +5,9 @@
 # This file is the default configuration file for the Bully program.
 #
 
+# Data Server address.
+data_server_address: "127.0.0.1:8081"
+
 # Peers addresses.
 #
 # NOTE: key represents a peer's ID, value represents its address.
