@@ -36,7 +36,7 @@ func getConn() (*net.UDPConn, error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		log.Fatal("not enough arguments")
+		log.Fatal("[ERR] node ID required such as `./bully 1`")
 	}
 
 	b, err := makeBully()
