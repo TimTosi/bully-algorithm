@@ -13,7 +13,7 @@ var ds *DataServer
 
 // -----------------------------------------------------------------------------
 
-// TODO
+// homeHandler returns the data-viz UI.
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("./assets/html/index.html")
 	if err != nil {
@@ -22,7 +22,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.ExecuteTemplate(w, tmpl.Name(), nil)
 }
 
-// TODO
+// dataHandler returns a JSON representing current nodes state.
 func dataHandler(w http.ResponseWriter, r *http.Request) {
 	dataSet, err := json.Marshal(ds.Data())
 	if err != nil {

@@ -9,3 +9,8 @@ type Message struct {
 	LeaderID int  `json:"leaderID"`
 	State    bool `json:"state"`
 }
+
+// NewMessage returns a new `*Message`.
+func NewMessage(nodeID, leaderID int, state bool) *Message {
+	return &Message{NodeID: nodeID, LeaderID: leaderID, State: state}
+}

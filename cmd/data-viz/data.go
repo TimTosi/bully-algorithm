@@ -5,7 +5,6 @@ import (
 	"net"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // -----------------------------------------------------------------------------
@@ -15,7 +14,7 @@ import (
 type DataServer struct {
 	*net.UDPConn
 
-	chanMap map[int]chan Message
+	swMap map[int]*SlidingWindow
 }
 
 // NewDataServer returns a new `DataServer` or an `error` if something occurs.
@@ -28,12 +27,12 @@ func NewDataServer(addr string) (*DataServer, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &DataServer{UDPConn: sock, chanMap: make(map[int]chan Message)}, nil
+	return &DataServer{UDPConn: sock, swMap: make(map[int]*SlidingWindow)}, nil
 }
 
 // -----------------------------------------------------------------------------
 
-// Listen reads, unpacks and forwards packet from `ds.UDPConn` to `ds.chanMap`.
+// Listen reads, unpacks and forwards packet from `ds.UDPConn` to `ds.swMap`.
 func (ds *DataServer) Listen() {
 	packet := make([]byte, 8)
 
@@ -49,41 +48,29 @@ func (ds *DataServer) Listen() {
 			}
 			nodeID, err := strconv.Atoi(packetData[0])
 			if err != nil {
+				log.Println(err)
 				continue
 			}
 			leaderID, err := strconv.Atoi(packetData[1])
 			if err != nil {
+				log.Println(err)
 				continue
 			}
 			// UNPACK POLICY
-			if _, ok := ds.chanMap[nodeID]; !ok {
-				ds.chanMap[nodeID] = make(chan Message)
+			if _, ok := ds.swMap[nodeID]; !ok {
+				ds.swMap[nodeID] = NewSlidingWindow()
 			}
-			select {
-			case ds.chanMap[nodeID] <- Message{NodeID: nodeID, LeaderID: leaderID, State: true}:
-				continue
-			case <-time.After(50 * time.Millisecond):
-				continue
-			}
+			go ds.swMap[nodeID].Push(NewMessage(nodeID, leaderID, true))
 		}
 	}
 }
 
-// TODO
-func (ds *DataServer) Data() []Message {
-	var msgs []Message
+// Data returns a slice of `*Message` describing current nodes state.
+func (ds *DataServer) Data() []*Message {
+	var msgs []*Message
 
-	for k, c := range ds.chanMap {
-		select {
-		case msg := <-c:
-			msgs = append(msgs, msg)
-			break
-		case <-time.After(1 * time.Second):
-			msg := Message{NodeID: k, LeaderID: -1, State: false}
-			msgs = append(msgs, msg)
-			break
-		}
+	for k, sw := range ds.swMap {
+		msgs = append(msgs, sw.Pull(k))
 	}
-
 	return msgs
 }
