@@ -1,0 +1,3 @@
+package: github.com/timtosi/bully-algorithm
+import:
+- package: github.com/spf13/viper
