@@ -11,8 +11,7 @@
 This repository contains source code of an implementation of the bully algorithm
 written in Go and a small browser visualization tool.
 
-This has been made for learning purposes about [distributed algorithms](https://en.wikipedia.org/wiki/Distributed_algorithm)
-- Bully algorithm being the simplest leader election algorithm to implement.
+This has been made for learning purposes about [distributed algorithms](https://en.wikipedia.org/wiki/Distributed_algorithm), Bully algorithm being the simplest leader election algorithm to implement.
 
 Finally, I feel like implementing an algorithm myself helps me to understands it
 better and I thought it could be interesting to someone else.
