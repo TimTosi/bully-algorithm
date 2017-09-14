@@ -53,5 +53,5 @@ Every file provided here is available under the [MIT License](http://opensource.
 ## Not Good Enough ?
 
 If you encouter any issue by using what is provided here, please
-[let me know](https://github.com/TimTosi/fishfinger/issues) ! 
+[let me know](https://github.com/TimTosi/bully-algorithm/issues) ! 
 Help me to improve by sending your thoughts to timothee.tosi@gmail.com !
