@@ -22,9 +22,11 @@ install:
 		glide install
 
 # Runs linter against the service codebase.
+#
+# NOTE: This rule require gcc to be found in the `$PATH`.
 .PHONY: lint
 lint:
-		@CGO_ENABLED=0 gometalinter --config=conf/gometalinter_conf.json ./...
+		@gometalinter --config=conf/gometalinter_conf.json ./...
 
 # Runs test suite.
 .PHONY: test
