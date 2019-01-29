@@ -38,7 +38,7 @@ func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 		peers:        NewPeerMap(),
 		mu:           &sync.RWMutex{},
 		electionChan: make(chan Message, 1),
-		receiveChan:  make(chan Message, 0),
+		receiveChan:  make(chan Message),
 	}
 
 	if err := b.Listen(proto, addr); err != nil {
@@ -54,11 +54,11 @@ func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 // -----------------------------------------------------------------------------
 
 // receive is a helper function handling communication between `Peer`s
-// and `b`. It creates a `gob.Decoder` and a from a `io.ReadWriteCloser`. Each
+// and `b`. It creates a `gob.Decoder` and a from a `io.ReadCloser`. Each
 // `Message` received that is not of type `CLOSE` is pushed to `b.receiveChan`.
 //
 // NOTE: this function is an infinite loop.
-func (b *Bully) receive(rwc io.ReadWriteCloser) {
+func (b *Bully) receive(rwc io.ReadCloser) {
 	var msg Message
 	dec := gob.NewDecoder(rwc)
 
@@ -205,7 +205,7 @@ func (b *Bully) Elect() {
 	}
 
 	select {
-	case _ = <-b.electionChan:
+	case <-b.electionChan:
 		return
 	case <-time.After(time.Second):
 		b.SetCoordinator(b.ID)
