@@ -4,10 +4,10 @@ import (
 	"encoding/gob"
 	"testing"
 
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestNewPeer(t *testing.T) {
+func TestPeer_NewPeer(t *testing.T) {
 	testCases := []struct {
 		name         string
 		expectedID   string
