@@ -124,6 +124,51 @@ func TestPeerMap_Find(t *testing.T) {
 	}
 }
 
+func TestPeerMap_PeerData(t *testing.T) {
+	testCases := []struct {
+		name             string
+		mockPeerMapSize  int
+		expectedPeerInfo []struct {
+			ID   string
+			Addr string
+		}
+	}{
+		{
+			"single",
+			1,
+			[]struct {
+				ID   string
+				Addr string
+			}{{"mock-1", "40.87.127.215"}},
+		},
+		{
+			"multiple",
+			2,
+			[]struct {
+				ID   string
+				Addr string
+			}{
+				{"mock-1", "40.87.127.215"},
+				{"mock-2", "84.72.203.27"},
+			},
+		},
+		{
+			"empty",
+			0,
+			[]struct {
+				ID   string
+				Addr string
+			}{},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.NotNil(t, NewPeerMap())
+		})
+	}
+}
+
 // func TestPeerMap_Write(t *testing.T) {
 // 	testCases := []struct {
 // 		name string
@@ -133,21 +178,6 @@ func TestPeerMap_Find(t *testing.T) {
 
 // 	for _, tc := range testCases {
 // 		t.Run(tc.name, func(t *testing.T) {
-// 			assert.NotNil(t, NewPeerMap())
-// 		})
-// 	}
-// }
-
-// func TestPeerMap_PeerData(t *testing.T) {
-// 	testCases := []struct {
-// 		name string
-// 	}{
-// 		{"regular"},
-// 	}
-
-// 	for _, tc := range testCases {
-// 		t.Run(tc.name, func(t *testing.T) {
-// 			assert.NotNil(t, NewPeerMap())
 // 		})
 // 	}
 // }
