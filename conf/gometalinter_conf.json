@@ -1,0 +1,7 @@
+{
+    "Deadline": "120s",
+    "Vendor": true,
+    "Exclude": ["proto/", "playground/", "vendor/"],
+    "DisableAll": true,
+    "Enable": ["gocyclo", "golint", "vet", "vetshadow", "ineffassign", "deadcode", "interfacer", "gosimple"]
+}
