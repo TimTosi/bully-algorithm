@@ -104,19 +104,25 @@ func TestPeerMap_Delete(t *testing.T) {
 	}
 }
 
-// func TestPeerMap_Find(t *testing.T) {
-// 	testCases := []struct {
-// 		name string
-// 	}{
-// 		{"regular"},
-// 	}
+func TestPeerMap_Find(t *testing.T) {
+	testCases := []struct {
+		name               string
+		mockID             string
+		mockPeerMapSize    int
+		expectedAssertFunc func(assert.TestingT, bool, ...interface{}) bool
+	}{
+		{"found", "mock-2", 2, assert.True},
+		{"not_found", "badID", 2, assert.False},
+		{"empty", "mock-2", 0, assert.False},
+	}
 
-// 	for _, tc := range testCases {
-// 		t.Run(tc.name, func(t *testing.T) {
-// 			assert.NotNil(t, NewPeerMap())
-// 		})
-// 	}
-// }
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			pm := mockPeerMap(tc.mockPeerMapSize)
+			tc.expectedAssertFunc(t, pm.Find(tc.mockID))
+		})
+	}
+}
 
 // func TestPeerMap_Write(t *testing.T) {
 // 	testCases := []struct {
