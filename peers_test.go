@@ -164,7 +164,9 @@ func TestPeerMap_PeerData(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.NotNil(t, NewPeerMap())
+			pm := mockPeerMap(tc.mockPeerMapSize)
+			assert.Equal(t, len(tc.expectedPeerInfo), len(pm.PeerData()))
+			assert.ElementsMatch(t, tc.expectedPeerInfo, pm.PeerData())
 		})
 	}
 }
