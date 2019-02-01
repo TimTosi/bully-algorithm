@@ -1,16 +1,12 @@
 package bully
 
-// -----------------------------------------------------------------------------
-
-// Message Type.
+// Message Types.
 const (
 	ELECTION = iota
 	OK
 	COORDINATOR
 	CLOSE
 )
-
-// -----------------------------------------------------------------------------
 
 // Message is a `struct` used for communication between `Bully`s.
 type Message struct {

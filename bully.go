@@ -9,8 +9,6 @@ import (
 	"time"
 )
 
-// -----------------------------------------------------------------------------
-
 // Bully is a `struct` representing a single node used by the `Bully Algorithm`.
 //
 // NOTE: More details about the `Bully algorithm` can be found here
@@ -50,8 +48,6 @@ func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 	}
 	return b, nil
 }
-
-// -----------------------------------------------------------------------------
 
 // receive is a helper function handling communication between `Peer`s
 // and `b`. It creates a `gob.Decoder` and a from a `io.ReadCloser`. Each
@@ -170,8 +166,6 @@ func (b *Bully) Send(to, addr string, what int) error {
 	}
 	return nil
 }
-
-// -----------------------------------------------------------------------------
 
 // SetCoordinator sets `ID` as the new `b.coordinator` if `ID` is greater than
 // `b.coordinator` or equal to `b.ID`.

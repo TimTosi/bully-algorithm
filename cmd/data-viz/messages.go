@@ -1,7 +1,5 @@
 package main
 
-// -----------------------------------------------------------------------------
-
 // Message is a `struct` used for communication between `bully.Bully`s and the
 // `DataServer`.
 type Message struct {

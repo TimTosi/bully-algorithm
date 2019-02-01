@@ -5,8 +5,6 @@ import (
 	"sync"
 )
 
-// -----------------------------------------------------------------------------
-
 // Peers is an `interface` exposing methods to handle communication with other
 // `Bully`s.
 //
@@ -36,8 +34,6 @@ type PeerMap struct {
 func NewPeerMap() *PeerMap {
 	return &PeerMap{mu: &sync.RWMutex{}, peers: make(map[string]*Peer)}
 }
-
-// -----------------------------------------------------------------------------
 
 // Add creates a new `Peer` and adds it to `pm.peers` using `ID` as a key.
 //
