@@ -7,6 +7,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// mockSock is a testing `struct` used for writing & reading tests.
+type mockSock struct {
+	expectedMsg []byte
+}
+
+// newMockSock is a testing function returning a new `newMockSock`.
+func newMockSock() *mockSock {
+	return &mockSock{expectedMsg: make([]byte, 0)}
+}
+
+// Write is a testing function used to implement `io.Writer` interface.
+func (ms *mockSock) Write(p []byte) (n int, err error) {
+	for n = 0; n < len(p); n++ {
+		ms.expectedMsg = append(ms.expectedMsg, p[n])
+	}
+	return n, nil
+}
+
+// Read is a testing function used to implement `io.Reader` interface.
+func (ms *mockSock) Read(p []byte) (n int, err error) {
+	copy(p, ms.expectedMsg)
+	return len(ms.expectedMsg), nil
+}
+
 // mockPeerMap is a testing function used to generate populated a
 // `*bully.PeerMap` containing `nb` elements with a maximum of 5 elements.
 func mockPeerMap(nb int) *PeerMap {
@@ -124,6 +148,40 @@ func TestPeerMap_Find(t *testing.T) {
 	}
 }
 
+func TestPeerMap_Write(t *testing.T) {
+	testCases := []struct {
+		name               string
+		mockPeerID         string
+		mockPeerMap        bool
+		mockMessage        interface{}
+		expectedMessage    string
+		expectedAssertFunc func(assert.TestingT, interface{}, ...interface{}) bool
+	}{
+		{"regular_string", "0", true, "ok", "ok", assert.Nil},
+		{"empty_map", "1", false, "ok", "", assert.NotNil},
+		{"empty_message", "0", true, "", "", assert.Nil},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			pm := NewPeerMap()
+			ms := newMockSock()
+
+			if tc.mockPeerMap == true {
+				pm.Add(tc.mockPeerID, "127.0.0.1", ms)
+			}
+			tc.expectedAssertFunc(t, pm.Write(tc.mockPeerID, tc.mockMessage))
+
+			if tc.mockPeerMap == true {
+				var res string
+				dec := gob.NewDecoder(ms)
+				assert.Nil(t, dec.Decode(&res))
+				assert.Equal(t, tc.expectedMessage, res)
+			}
+		})
+	}
+}
+
 func TestPeerMap_PeerData(t *testing.T) {
 	testCases := []struct {
 		name             string
@@ -170,18 +228,3 @@ func TestPeerMap_PeerData(t *testing.T) {
 		})
 	}
 }
-
-// func TestPeerMap_Write(t *testing.T) {
-// 	testCases := []struct {
-// 		name string
-// 	}{
-// 		{"regular"},
-// 	}
-
-// 	for _, tc := range testCases {
-// 		t.Run(tc.name, func(t *testing.T) {
-// 		})
-// 	}
-// }
-
-// ADD RACE TESTS
