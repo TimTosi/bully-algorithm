@@ -26,7 +26,8 @@ install:
 # NOTE: This rule require gcc to be found in the `$PATH`.
 .PHONY: lint
 lint:
-		@gometalinter --config=conf/gometalinter_conf.json ./...
+		@gometalinter --config=conf/gometalinter_conf.json ./... && \
+		echo "linters pass ok !"
 
 # Runs test suite.
 .PHONY: test
