@@ -3,5 +3,25 @@
     "Vendor": true,
     "Exclude": ["proto/", "playground/", "vendor/"],
     "DisableAll": true,
-    "Enable": ["gocyclo", "golint", "vet", "vetshadow", "ineffassign", "deadcode", "interfacer", "gosimple"]
+    "Enable": [
+        "deadcode",
+        "dupl",
+        "errcheck",
+        "ineffassign",
+        "interfacer",
+        "goconst",
+        "gocyclo",
+        "golint",
+        "gotype",
+        "ineffassign",
+        "interfacer",
+        "maligned",
+        "misspell",
+        "staticcheck",
+        "structcheck",
+        "unconvert",
+        "unparam",
+        "vet",
+        "vetshadow"
+    ]
 }
