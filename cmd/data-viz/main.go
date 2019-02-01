@@ -7,32 +7,28 @@ import (
 	"net/http"
 )
 
-// -----------------------------------------------------------------------------
-
 var ds *DataServer
-
-// -----------------------------------------------------------------------------
 
 // homeHandler returns the data-viz UI.
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("./assets/html/index.html")
 	if err != nil {
-		http.Error(w, err.Error(), 302)
+		http.Error(w, err.Error(), http.StatusFound)
 	}
-	tmpl.ExecuteTemplate(w, tmpl.Name(), nil)
+	if err := tmpl.ExecuteTemplate(w, tmpl.Name(), nil); err != nil {
+		log.Fatalf("homeHandler: %+v", err)
+	}
 }
 
 // dataHandler returns a JSON representing current nodes state.
 func dataHandler(w http.ResponseWriter, r *http.Request) {
 	dataSet, err := json.Marshal(ds.Data())
 	if err != nil {
-		panic(err)
+		log.Fatalf("dataHandler: %+v", err)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(dataSet)
+	_, _ = w.Write(dataSet)
 }
-
-// -----------------------------------------------------------------------------
 
 func main() {
 	var err error
@@ -49,5 +45,7 @@ func main() {
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/data", dataHandler)
 	log.Println("Server started at :8080")
-	http.ListenAndServe(":8080", nil)
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatalf("data-viz: %+v", err)
+	}
 }

@@ -7,8 +7,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// -----------------------------------------------------------------------------
-
 const (
 	confFile     = "bully.conf"
 	confDataAddr = "data_server_address"
@@ -18,8 +16,6 @@ const (
 var (
 	confPath = []string{"$HOME/", "./", "/tmp/"}
 )
-
-// -----------------------------------------------------------------------------
 
 func init() {
 	viper.SetDefault(confDataAddr, "127.0.0.1:8081")
@@ -40,8 +36,6 @@ func init() {
 	}
 	printConf()
 }
-
-// -----------------------------------------------------------------------------
 
 func printConf() {
 	log.Printf("[info] running with configuration found at %v", viper.ConfigFileUsed())

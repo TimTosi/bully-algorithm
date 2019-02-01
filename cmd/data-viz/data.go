@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-// -----------------------------------------------------------------------------
-
 // DataServer is a `struct` used for gathering and forwarding `bully.Bully`s
 // state.
 type DataServer struct {
@@ -29,8 +27,6 @@ func NewDataServer(addr string) (*DataServer, error) {
 	}
 	return &DataServer{UDPConn: sock, swMap: make(map[int]*SlidingWindow)}, nil
 }
-
-// -----------------------------------------------------------------------------
 
 // Listen reads, unpacks and forwards packet from `ds.UDPConn` to `ds.swMap`.
 func (ds *DataServer) Listen() {

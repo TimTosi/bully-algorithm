@@ -5,8 +5,6 @@ import (
 	"io"
 )
 
-// -----------------------------------------------------------------------------
-
 // Peer is a `struct` representing a remote `Bully`.
 type Peer struct {
 	ID   string

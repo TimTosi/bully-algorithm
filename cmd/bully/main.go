@@ -11,8 +11,6 @@ import (
 	bully "github.com/timtosi/bully-algorithm"
 )
 
-// -----------------------------------------------------------------------------
-
 // makeBully is a helper function which main purpose is code readability.
 func makeBully() (*bully.Bully, error) {
 	return bully.NewBully(
@@ -32,8 +30,6 @@ func getConn() (*net.UDPConn, error) {
 	return net.DialUDP("udp", nil, raddr)
 }
 
-// -----------------------------------------------------------------------------
-
 func main() {
 	if len(os.Args) < 2 {
 		log.Fatal("[ERR] node ID required such as `./bully 1`")
@@ -47,11 +43,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	workFunc := func() {
 		for {
-			fmt.Fprintf(conn, "%s:%s", b.ID, b.Coordinator())
+			_, _ = fmt.Fprintf(conn, "%s:%s", b.ID, b.Coordinator())
 			fmt.Printf("Bully %s: Coordinator is %s\n", b.ID, b.Coordinator())
 			time.Sleep(1 * time.Second)
 		}

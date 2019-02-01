@@ -1,11 +1,10 @@
 package bully
 
 import (
+	"fmt"
 	"io"
 	"sync"
 )
-
-// -----------------------------------------------------------------------------
 
 // Peers is an `interface` exposing methods to handle communication with other
 // `Bully`s.
@@ -36,8 +35,6 @@ type PeerMap struct {
 func NewPeerMap() *PeerMap {
 	return &PeerMap{mu: &sync.RWMutex{}, peers: make(map[string]*Peer)}
 }
-
-// -----------------------------------------------------------------------------
 
 // Add creates a new `Peer` and adds it to `pm.peers` using `ID` as a key.
 //
@@ -78,7 +75,13 @@ func (pm *PeerMap) Write(ID string, msg interface{}) error {
 	pm.mu.Lock()
 	defer pm.mu.Unlock()
 
-	return pm.peers[ID].sock.Encode(msg)
+	if p, ok := pm.peers[ID]; !ok {
+		return fmt.Errorf("Write: peer %s not found in PeerMap", ID)
+
+	} else if err := p.sock.Encode(msg); err != nil {
+		return fmt.Errorf("Write: %v", err)
+	}
+	return nil
 }
 
 // PeerData returns a slice of anonymous structures representing a tupple

@@ -2,13 +2,10 @@ package main
 
 import "time"
 
-// -----------------------------------------------------------------------------
-
 // SlidingWindow is a `struct` representing a node state over time.
 type SlidingWindow struct {
 	mc       chan *Message
 	lastSent *Message
-	id       int
 	miss     int
 }
 

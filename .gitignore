@@ -1,0 +1,4 @@
+.vscode
+coverage.out
+cmd/bully/bully
+cmd/data-viz/data-viz
