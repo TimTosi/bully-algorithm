@@ -2,6 +2,7 @@ package bully
 
 import (
 	"encoding/gob"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -40,11 +41,11 @@ func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 	}
 
 	if err := b.Listen(proto, addr); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("NewBully: %v", err)
 	}
 
 	if err := b.Connect(proto, peers); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("NewBully: %v", err)
 	}
 	return b, nil
 }
@@ -88,7 +89,7 @@ func (b *Bully) listen() {
 	for {
 		conn, err := b.AcceptTCP()
 		if err != nil {
-			log.Print(err)
+			log.Printf("listen: %v", err)
 			continue
 		}
 		go b.receive(conn)
@@ -100,11 +101,11 @@ func (b *Bully) listen() {
 func (b *Bully) Listen(proto, addr string) error {
 	laddr, err := net.ResolveTCPAddr(proto, addr)
 	if err != nil {
-		return err
+		return fmt.Errorf("Listen: %v", err)
 	}
 	b.TCPListener, err = net.ListenTCP(proto, laddr)
 	if err != nil {
-		return err
+		return fmt.Errorf("Listen: %v", err)
 	}
 	go b.listen()
 	return nil
@@ -117,11 +118,11 @@ func (b *Bully) Listen(proto, addr string) error {
 func (b *Bully) connect(proto, addr, ID string) error {
 	raddr, err := net.ResolveTCPAddr(proto, addr)
 	if err != nil {
-		return err
+		return fmt.Errorf("connect: %v", err)
 	}
 	sock, err := net.DialTCP(proto, nil, raddr)
 	if err != nil {
-		return err
+		return fmt.Errorf("connect: %v", err)
 	}
 
 	b.peers.Add(ID, addr, sock)
@@ -159,7 +160,7 @@ func (b *Bully) Send(to, addr string, what int) error {
 			break
 		}
 		if attempts > maxRetries && err != nil {
-			return err
+			return fmt.Errorf("Send: %v", err)
 		}
 		_ = b.connect("tcp4", addr, to)
 		time.Sleep(10 * time.Millisecond)
