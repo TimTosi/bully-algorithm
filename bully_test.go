@@ -119,6 +119,12 @@ func TestBully_Listen(t *testing.T) {
 			"mockBadAddr:8102",
 			assert.NotNil,
 		},
+		{
+			"reserved_ports",
+			"tcp4",
+			"127.0.0.1:8",
+			assert.NotNil,
+		},
 	}
 
 	for _, tc := range testCases {
