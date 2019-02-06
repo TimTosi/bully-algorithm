@@ -1,6 +1,9 @@
 package bully
 
 import (
+	"fmt"
+	"log"
+	"net"
 	"sync"
 	"testing"
 
@@ -18,6 +21,28 @@ func mockBully(ID, addr, coordinator string) *Bully {
 		electionChan: make(chan Message, 1),
 		receiveChan:  make(chan Message),
 	}
+}
+
+// mockSocket is a testing function creating a mock socket.
+func mockSocket(addr string) (*net.TCPListener, error) {
+	laddr, err := net.ResolveTCPAddr("tcp4", addr)
+	if err != nil {
+		return nil, fmt.Errorf("mockSocket: %v", err)
+	}
+	tcpListener, err := net.ListenTCP("tcp4", laddr)
+	if err != nil {
+		return nil, fmt.Errorf("mockSocket: %v", err)
+	}
+	go func() {
+		for {
+			_, err := tcpListener.AcceptTCP()
+			if err != nil {
+				log.Printf("listen: %v", err)
+				continue
+			}
+		}
+	}()
+	return tcpListener, nil
 }
 
 // -----------------------------------------------------------------------------
