@@ -128,3 +128,42 @@ func TestBully_Listen(t *testing.T) {
 		})
 	}
 }
+
+func TestPeer_connect(t *testing.T) {
+	testCases := []struct {
+		name               string
+		mockProto          string
+		mockAddr           string
+		expectedAssertFunc func(assert.TestingT, interface{}, ...interface{}) bool
+	}{
+		{
+			"regular",
+			"tcp4",
+			"127.0.0.1:8200",
+			assert.Nil,
+		},
+		{
+			"badProto",
+			"tcp22",
+			"127.0.0.1:8200",
+			assert.NotNil,
+		},
+		{
+			"badAddr",
+			"tcp6",
+			"127.0.0.1:9999",
+			assert.NotNil,
+		},
+	}
+
+	ms, err := mockSocket("127.0.0.1:8200")
+	assert.Nil(t, err)
+	defer func() { _ = ms.Close() }()
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			b := mockBully("1", "127.0.0.1", "1")
+			tc.expectedAssertFunc(t, b.connect(tc.mockProto, tc.mockAddr, "1"))
+		})
+	}
+}
