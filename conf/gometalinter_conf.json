@@ -1,7 +1,7 @@
 {
     "Deadline": "120s",
     "Vendor": true,
-    "Exclude": ["proto/", "playground/", "vendor/"],
+    "Exclude": ["proto/", "playground/", "vendor/", ".*_test.go"],
     "DisableAll": true,
     "Enable": [
         "deadcode",
