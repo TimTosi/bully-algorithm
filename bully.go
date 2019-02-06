@@ -115,6 +115,9 @@ func (b *Bully) Listen(proto, addr string) error {
 // to establish a tcp connection using the protocol `proto`. The established
 // connection is set to `b.peers[ID]` or the function returns an `error`
 // if something occurs.
+//
+// NOTE: In the case `ID` already exists in `b.peers`, the new connection
+// replaces the old one.
 func (b *Bully) connect(proto, addr, ID string) error {
 	raddr, err := net.ResolveTCPAddr(proto, addr)
 	if err != nil {
