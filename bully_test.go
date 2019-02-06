@@ -11,11 +11,11 @@ import (
 )
 
 // mockBully is a testing function returning a mock `*bully.Bully`.
-func mockBully(ID, addr, coordinator string) *Bully {
+func mockBully(ID, coordinator, addr string) *Bully {
 	return &Bully{
 		ID:           ID,
 		addr:         addr,
-		coordinator:  ID,
+		coordinator:  coordinator,
 		peers:        NewPeerMap(),
 		mu:           &sync.RWMutex{},
 		electionChan: make(chan Message, 1),
@@ -258,6 +258,24 @@ func TestBully_SetCoordinator(t *testing.T) {
 			b := mockBully(tc.mockID, tc.mockID, "127.0.0.1")
 			b.SetCoordinator(tc.mockPeerID)
 			assert.Equal(t, tc.expectedCoordinator, b.coordinator)
+		})
+	}
+}
+
+func TestBully_Coordinator(t *testing.T) {
+	testCases := []struct {
+		name                string
+		mockCoordinator     string
+		expectedCoordinator string
+	}{
+		{"regular", "A", "A"},
+		{"empty_coordinator", "", ""},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			b := mockBully("mockID", tc.mockCoordinator, "127.0.0.1")
+			assert.Equal(t, tc.expectedCoordinator, b.Coordinator())
 		})
 	}
 }
