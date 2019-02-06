@@ -29,6 +29,8 @@ type Bully struct {
 // NewBully returns a new `Bully` or an `error`.
 //
 // NOTE: All connections to `Peer`s are established during this function.
+//
+// NOTE: The `proto` value can be one of this list: `tcp`, `tcp4`, `tcp6`.
 func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 	b := &Bully{
 		ID:           ID,
@@ -44,9 +46,7 @@ func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 		return nil, fmt.Errorf("NewBully: %v", err)
 	}
 
-	if err := b.Connect(proto, peers); err != nil {
-		return nil, fmt.Errorf("NewBully: %v", err)
-	}
+	b.Connect(proto, peers)
 	return b, nil
 }
 
@@ -115,6 +115,9 @@ func (b *Bully) Listen(proto, addr string) error {
 // to establish a tcp connection using the protocol `proto`. The established
 // connection is set to `b.peers[ID]` or the function returns an `error`
 // if something occurs.
+//
+// NOTE: In the case `ID` already exists in `b.peers`, the new connection
+// replaces the old one.
 func (b *Bully) connect(proto, addr, ID string) error {
 	raddr, err := net.ResolveTCPAddr(proto, addr)
 	if err != nil {
@@ -129,18 +132,17 @@ func (b *Bully) connect(proto, addr, ID string) error {
 	return nil
 }
 
-// Connect performs a connection to the remote `Peer`s and returns an `error`
-// if something occurs during connection.
-func (b *Bully) Connect(proto string, peers map[string]string) (err error) {
+// Connect performs a connection to the remote `Peer`s.
+func (b *Bully) Connect(proto string, peers map[string]string) {
 	for ID, addr := range peers {
 		if b.ID == ID {
 			continue
 		}
 		if err := b.connect(proto, addr, ID); err != nil {
+			log.Printf("Connect: %v", err)
 			continue
 		}
 	}
-	return nil
 }
 
 // Send sends a `bully.Message` of type `what` to `b.peer[to]` at the address

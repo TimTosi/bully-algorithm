@@ -152,14 +152,17 @@ func TestPeerMap_Write(t *testing.T) {
 	testCases := []struct {
 		name               string
 		mockPeerID         string
+		mockWriteID        string
 		mockPeerMap        bool
 		mockMessage        interface{}
 		expectedMessage    string
 		expectedAssertFunc func(assert.TestingT, interface{}, ...interface{}) bool
 	}{
-		{"regular_string", "0", true, "ok", "ok", assert.Nil},
-		{"empty_map", "1", false, "ok", "", assert.NotNil},
-		{"empty_message", "0", true, "", "", assert.Nil},
+		{"regular_string", "0", "0", true, "ok", "ok", assert.Nil},
+		{"empty_map", "1", "1", false, "ok", "", assert.NotNil},
+		{"empty_message", "0", "0", true, "", "", assert.Nil},
+		{"peerNotFound", "1", "50", true, "ok", "", assert.NotNil},
+		{"badMessage", "0", "0", true, interface{}(nil), "ok", assert.NotNil},
 	}
 
 	for _, tc := range testCases {
@@ -170,9 +173,11 @@ func TestPeerMap_Write(t *testing.T) {
 			if tc.mockPeerMap == true {
 				pm.Add(tc.mockPeerID, "127.0.0.1", ms)
 			}
-			tc.expectedAssertFunc(t, pm.Write(tc.mockPeerID, tc.mockMessage))
 
-			if tc.mockPeerMap == true {
+			err := pm.Write(tc.mockWriteID, tc.mockMessage)
+			tc.expectedAssertFunc(t, err)
+
+			if err == nil {
 				var res string
 				dec := gob.NewDecoder(ms)
 				assert.Nil(t, dec.Decode(&res))

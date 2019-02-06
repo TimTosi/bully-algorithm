@@ -7,7 +7,7 @@ import (
 )
 
 // Peers is an `interface` exposing methods to handle communication with other
-// `Bully`s.
+// `bully.Bully`s.
 //
 // NOTE: This project offers a default implementation of the `Peers` interface
 // that provides basic functions. This will work for the most simple of use
@@ -25,18 +25,18 @@ type Peers interface {
 }
 
 // PeerMap is a `struct` implementing the `Peers` interface and representing
-// a container of `Peer`s.
+// a container of `bully.Peer`s.
 type PeerMap struct {
 	mu    *sync.RWMutex
 	peers map[string]*Peer
 }
 
-// NewPeerMap returns a new `PeerMap`.
+// NewPeerMap returns a new `bully.PeerMap`.
 func NewPeerMap() *PeerMap {
 	return &PeerMap{mu: &sync.RWMutex{}, peers: make(map[string]*Peer)}
 }
 
-// Add creates a new `Peer` and adds it to `pm.peers` using `ID` as a key.
+// Add creates a new `bully.Peer` and adds it to `pm.peers` using `ID` as a key.
 //
 // NOTE: This function is thread-safe.
 func (pm *PeerMap) Add(ID, addr string, fd io.Writer) {
@@ -46,7 +46,7 @@ func (pm *PeerMap) Add(ID, addr string, fd io.Writer) {
 	pm.peers[ID] = NewPeer(ID, addr, fd)
 }
 
-// Delete erases the `Peer` corresponding to `ID` from `pm.peers`.
+// Delete erases the `bully.Peer` corresponding to `ID` from `pm.peers`.
 //
 // NOTE: This function is thread-safe.
 func (pm *PeerMap) Delete(ID string) {

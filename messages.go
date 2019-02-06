@@ -8,7 +8,7 @@ const (
 	CLOSE
 )
 
-// Message is a `struct` used for communication between `Bully`s.
+// Message is a `struct` used for communication between `bully.Bully`s.
 type Message struct {
 	PeerID string
 	Addr   string
