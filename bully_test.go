@@ -167,3 +167,70 @@ func TestPeer_connect(t *testing.T) {
 		})
 	}
 }
+
+func TestPeer_Connect(t *testing.T) {
+	testCases := []struct {
+		name           string
+		mockProto      string
+		mockSocketAddr string
+		mockPeers      map[string]string
+	}{
+		{
+			"regular",
+			"tcp4",
+			"127.0.0.1:8300",
+			map[string]string{
+				"1": "127.0.0.1:8301",
+				"2": "127.0.0.1:8302",
+				"3": "127.0.0.1:8303",
+			},
+		},
+		{
+			"samePeers",
+			"tcp4",
+			"127.0.0.1:8310",
+			map[string]string{
+				"1": "127.0.0.1:8311",
+				"2": "127.0.0.1:8311",
+				"3": "127.0.0.1:8311",
+			},
+		},
+		{
+			"emptyMap",
+			"tcp4",
+			"127.0.0.1:8320",
+			map[string]string{},
+		},
+		{
+			"badProto",
+			"tcp22",
+			"127.0.0.1:8330",
+			map[string]string{
+				"1": "127.0.0.1:8331",
+				"2": "127.0.0.1:8332",
+				"3": "127.0.0.1:8333",
+			},
+		},
+		{
+			"badPeer",
+			"tcp22",
+			"127.0.0.1:8340",
+			map[string]string{
+				"1": "127.0.0.1:8341",
+				"2": "notWorkingAddr",
+				"3": "127.0.0.1:8343",
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			ms, err := mockSocket(tc.mockSocketAddr)
+			assert.Nil(t, err)
+			defer func() { _ = ms.Close() }()
+
+			b := mockBully("1", "127.0.0.1", "1")
+			assert.NotPanics(t, func() { b.Connect(tc.mockProto, tc.mockPeers) })
+		})
+	}
+}
