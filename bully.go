@@ -139,6 +139,7 @@ func (b *Bully) Connect(proto string, peers map[string]string) {
 			continue
 		}
 		if err := b.connect(proto, addr, ID); err != nil {
+			log.Printf("Connect: %v", err)
 			continue
 		}
 	}
