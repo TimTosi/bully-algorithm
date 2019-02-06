@@ -129,7 +129,7 @@ func TestBully_Listen(t *testing.T) {
 	}
 }
 
-func TestPeer_connect(t *testing.T) {
+func TestBully_connect(t *testing.T) {
 	testCases := []struct {
 		name               string
 		mockProto          string
@@ -168,7 +168,7 @@ func TestPeer_connect(t *testing.T) {
 	}
 }
 
-func TestPeer_Connect(t *testing.T) {
+func TestBully_Connect(t *testing.T) {
 	testCases := []struct {
 		name           string
 		mockProto      string
