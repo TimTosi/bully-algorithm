@@ -22,7 +22,7 @@ func mockBully(ID, addr, coordinator string) *Bully {
 
 // -----------------------------------------------------------------------------
 
-func TestPeer_NewBully(t *testing.T) {
+func TestBully_NewBully(t *testing.T) {
 	testCases := []struct {
 		name                    string
 		mockID                  string
