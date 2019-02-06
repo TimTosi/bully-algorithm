@@ -234,3 +234,24 @@ func TestPeer_Connect(t *testing.T) {
 		})
 	}
 }
+
+func TestBully_SetCoordinator(t *testing.T) {
+	testCases := []struct {
+		name                string
+		mockID              string
+		mockPeerID          string
+		expectedCoordinator string
+	}{
+		{"greater", "A", "B", "B"},
+		{"less", "Zawarudo", "A", "Zawarudo"},
+		{"equal", "same-id", "same-id", "same-id"},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			b := mockBully(tc.mockID, tc.mockID, "127.0.0.1")
+			b.SetCoordinator(tc.mockPeerID)
+			assert.Equal(t, tc.expectedCoordinator, b.coordinator)
+		})
+	}
+}
