@@ -279,3 +279,63 @@ func TestBully_Coordinator(t *testing.T) {
 		})
 	}
 }
+
+func TestBully_Send(t *testing.T) {
+	testCases := []struct {
+		name               string
+		mockAddr           string
+		mockTo             string
+		mockPeerAddr       string
+		mockPeers          map[string]string
+		expectedAssertFunc func(assert.TestingT, interface{}, ...interface{}) bool
+	}{
+		{
+			"regular",
+			"127.0.0.1:8410",
+			"2",
+			"127.0.0.1:8412",
+			map[string]string{
+				"1": "127.0.0.1:8411",
+				"2": "127.0.0.1:8400",
+				"3": "127.0.0.1:8413",
+			},
+			assert.Nil,
+		},
+		{
+			"peerNotFound",
+			"127.0.0.1:8420",
+			"2",
+			"127.0.0.1:8400",
+			map[string]string{
+				"1": "127.0.0.1:8421",
+				"3": "127.0.0.1:8423",
+			},
+			assert.Nil,
+		},
+		{
+			"noRemoteHost",
+			"127.0.0.1:8430",
+			"2",
+			"127.0.0.1:8439",
+			map[string]string{
+				"1": "127.0.0.1:8431",
+				"3": "127.0.0.1:8433",
+			},
+			assert.NotNil,
+		},
+	}
+
+	ms, err := mockSocket("127.0.0.1:8400")
+	assert.Nil(t, err)
+	defer func() { _ = ms.Close() }()
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			b, err := NewBully("mockId", tc.mockAddr, "tcp4", tc.mockPeers)
+			assert.Nil(t, err)
+			defer func() { _ = b.Close() }()
+
+			tc.expectedAssertFunc(t, b.Send(tc.mockTo, tc.mockPeerAddr, 0))
+		})
+	}
+}
