@@ -7,6 +7,7 @@ import (
 	"net"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -345,6 +346,77 @@ func TestBully_Send(t *testing.T) {
 			defer func() { _ = b.Close() }()
 
 			tc.expectedAssertFunc(t, b.Send(tc.mockTo, tc.mockPeerAddr, 0))
+		})
+	}
+}
+func TestBully_Elect(t *testing.T) {
+	testCases := []struct {
+		name                string
+		mockID              string
+		mockCoordinator     string
+		mockAddr            string
+		mockPeers           map[string]string
+		mockPeerGreater     bool
+		expectedCoordinator string
+	}{
+		{
+			"peerCoordinator",
+			"1",
+			"2",
+			"127.0.0.1:8511",
+			map[string]string{
+				"2": "127.0.0.1:8512",
+			},
+			true,
+			"2",
+		},
+		{
+			"selfCoordinator",
+			"5",
+			"2",
+			"127.0.0.1:8521",
+			map[string]string{
+				"1": "127.0.0.1:8511",
+				"2": "127.0.0.1:8512",
+				"3": "127.0.0.1:8513",
+			},
+			false,
+			"5",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			ms, msgChan, err := mockSocket("127.0.0.1:8512")
+			assert.Nil(t, err)
+			defer func() { _ = ms.Close() }()
+
+			b := mockBully(tc.mockID, tc.mockCoordinator, tc.mockAddr)
+			defer func() { _ = b.Close() }()
+			b.Connect("tcp4", tc.mockPeers)
+
+			if tc.mockPeerGreater {
+				b.electionChan <- Message{}
+				b.Elect()
+
+				select {
+				case msg := <-msgChan:
+					assert.Equal(t, ELECTION, msg.Type)
+					break
+				case <-time.After(1 * time.Second):
+					t.Fail()
+				}
+			} else {
+				b.Elect()
+
+				select {
+				case msg := <-msgChan:
+					assert.Equal(t, COORDINATOR, msg.Type)
+				case <-time.After(3 * time.Second):
+					t.Fail()
+				}
+			}
+			assert.Equal(t, tc.expectedCoordinator, b.coordinator)
 		})
 	}
 }
