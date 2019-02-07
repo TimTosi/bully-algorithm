@@ -25,34 +25,42 @@ func mockBully(ID, coordinator, addr string) *Bully {
 	}
 }
 
-// mockSocket is a testing function creating a mock socket.
-func mockSocket(addr string) (*net.TCPListener, chan Message, error) {
+// mockSocket is a `struct` only used for testing purposes.
+type mockSocket struct {
+	*net.TCPListener
+
+	msgChan chan Message
+}
+
+// newMockSocket is a testing function returning a new `*bully.mockSocket` or an
+// `error` if something bad occurs.
+func newMockSocket(addr string) (*mockSocket, error) {
 	laddr, err := net.ResolveTCPAddr("tcp4", addr)
 	if err != nil {
-		return nil, nil, fmt.Errorf("mockSocket: %v", err)
+		return nil, fmt.Errorf("newMockSocket: %v", err)
 	}
 	tcpListener, err := net.ListenTCP("tcp4", laddr)
 	if err != nil {
-		return nil, nil, fmt.Errorf("mockSocket: %v", err)
+		return nil, fmt.Errorf("newMockSocket: %v", err)
 	}
+	return &mockSocket{TCPListener: tcpListener, msgChan: make(chan Message, 1)}, nil
+}
 
-	msgChan := make(chan Message, 1)
-	go func() {
-		var msg Message
+// accept is a testing function mimicking the behaviour of a `bully.Bully`.
+func (ms *mockSocket) accept() {
+	var msg Message
 
-		conn, err := tcpListener.AcceptTCP()
-		if err != nil {
-			log.Printf("mockSocket: %v", err)
-			return
+	conn, err := ms.AcceptTCP()
+	if err != nil {
+		log.Printf("mockSocket: %v", err)
+		return
+	}
+	dec := gob.NewDecoder(conn)
+	for {
+		if err := dec.Decode(&msg); err == nil {
+			ms.msgChan <- msg
 		}
-		dec := gob.NewDecoder(conn)
-		for {
-			if err := dec.Decode(&msg); err == nil && msg.Type != CLOSE {
-				msgChan <- msg
-			}
-		}
-	}()
-	return tcpListener, msgChan, nil
+	}
 }
 
 // -----------------------------------------------------------------------------
@@ -172,7 +180,7 @@ func TestBully_connect(t *testing.T) {
 		},
 	}
 
-	ms, _, err := mockSocket("127.0.0.1:8200")
+	ms, err := newMockSocket("127.0.0.1:8200")
 	assert.Nil(t, err)
 	defer func() { _ = ms.Close() }()
 
@@ -241,7 +249,7 @@ func TestBully_Connect(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			ms, _, err := mockSocket(tc.mockSocketAddr)
+			ms, err := newMockSocket(tc.mockSocketAddr)
 			assert.Nil(t, err)
 			defer func() { _ = ms.Close() }()
 
@@ -335,7 +343,7 @@ func TestBully_Send(t *testing.T) {
 		},
 	}
 
-	ms, _, err := mockSocket("127.0.0.1:8400")
+	ms, err := newMockSocket("127.0.0.1:8400")
 	assert.Nil(t, err)
 	defer func() { _ = ms.Close() }()
 
@@ -387,7 +395,8 @@ func TestBully_Elect(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			ms, msgChan, err := mockSocket("127.0.0.1:8512")
+			ms, err := newMockSocket("127.0.0.1:8512")
+			go ms.accept()
 			assert.Nil(t, err)
 			defer func() { _ = ms.Close() }()
 
@@ -401,7 +410,7 @@ func TestBully_Elect(t *testing.T) {
 			b.Elect()
 
 			select {
-			case msg := <-msgChan:
+			case msg := <-ms.msgChan:
 				assert.Equal(t, tc.expectedMessageType, msg.Type)
 				break
 			case <-time.After(3 * time.Second):
