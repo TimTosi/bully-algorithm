@@ -1,0 +1,69 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11
+    working_directory: /go/src/github.com/timtosi/bully-algorithm
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: make install
+      - run:
+          name: Build binaries
+          command: make build
+      - persist_to_workspace:
+          root: cmd
+          paths:
+            - bully/bully
+            - data-viz/data-viz
+
+  run-test:
+    docker:
+      - image: circleci/golang:1.11
+    working_directory: /go/src/github.com/timtosi/bully-algorithm
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - checkout
+      - run: mkdir -p $TEST_RESULTS
+      - run: go get github.com/jstemmer/go-junit-report
+      - run:
+          name: Install dependencies
+          command: make install
+      - run:
+          name: Run unit tests
+          command: |
+              trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
+              make test | tee ${TEST_RESULTS}/go-test.out
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: raw-test-output
+      - store_test_results:
+          path: /tmp/test-results
+
+  deploy-image:
+    machine: true
+    working_directory: ~/.go_workspace/src/github.com/timtosi/bully-algorithm
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/cmd
+      - run:
+          name: Temporary Fake Deploy
+          command: echo "Ok"
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - run-test
+      - build
+      - deploy-image:
+          requires:
+            - run-test
+            - build
+          filters:
+            branches:
+              only:
+                - master

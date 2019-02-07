@@ -21,13 +21,19 @@ install:
 		glide update
 		glide install
 
+# Build project binaries.
+.PHONY: build
+build:
+		cd cmd/bully && go build -o bully
+		cd cmd/data-viz && go build -o data-viz
+
 # Runs linter against the service codebase.
 #
 # NOTE: This rule require gcc to be found in the `$PATH`.
 .PHONY: lint
 lint:
 		@gometalinter --config=conf/gometalinter_conf.json ./... && \
-		echo "linters pass ok !"
+		echo "linter pass ok !"
 
 # Runs test suite.
 .PHONY: test
