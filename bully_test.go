@@ -1,6 +1,7 @@
 package bully
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net"
@@ -24,25 +25,33 @@ func mockBully(ID, coordinator, addr string) *Bully {
 }
 
 // mockSocket is a testing function creating a mock socket.
-func mockSocket(addr string) (*net.TCPListener, error) {
+func mockSocket(addr string) (*net.TCPListener, chan Message, error) {
 	laddr, err := net.ResolveTCPAddr("tcp4", addr)
 	if err != nil {
-		return nil, fmt.Errorf("mockSocket: %v", err)
+		return nil, nil, fmt.Errorf("mockSocket: %v", err)
 	}
 	tcpListener, err := net.ListenTCP("tcp4", laddr)
 	if err != nil {
-		return nil, fmt.Errorf("mockSocket: %v", err)
+		return nil, nil, fmt.Errorf("mockSocket: %v", err)
 	}
+
+	msgChan := make(chan Message, 1)
 	go func() {
+		var msg Message
+
+		conn, err := tcpListener.AcceptTCP()
+		if err != nil {
+			log.Printf("mockSocket: %v", err)
+			return
+		}
+		dec := gob.NewDecoder(conn)
 		for {
-			_, err := tcpListener.AcceptTCP()
-			if err != nil {
-				log.Printf("listen: %v", err)
-				continue
+			if err := dec.Decode(&msg); err == nil && msg.Type != CLOSE {
+				msgChan <- msg
 			}
 		}
 	}()
-	return tcpListener, nil
+	return tcpListener, msgChan, nil
 }
 
 // -----------------------------------------------------------------------------
@@ -129,7 +138,7 @@ func TestBully_Listen(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			b := mockBully("1", "127.0.0.1", "1")
+			b := mockBully("1", "1", "127.0.0.1")
 			tc.expectedAssertFunc(t, b.Listen(tc.mockProto, tc.mockAddr))
 		})
 	}
@@ -162,13 +171,13 @@ func TestBully_connect(t *testing.T) {
 		},
 	}
 
-	ms, err := mockSocket("127.0.0.1:8200")
+	ms, _, err := mockSocket("127.0.0.1:8200")
 	assert.Nil(t, err)
 	defer func() { _ = ms.Close() }()
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			b := mockBully("1", "127.0.0.1", "1")
+			b := mockBully("1", "1", "127.0.0.1")
 			tc.expectedAssertFunc(t, b.connect(tc.mockProto, tc.mockAddr, "1"))
 		})
 	}
@@ -231,11 +240,11 @@ func TestBully_Connect(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			ms, err := mockSocket(tc.mockSocketAddr)
+			ms, _, err := mockSocket(tc.mockSocketAddr)
 			assert.Nil(t, err)
 			defer func() { _ = ms.Close() }()
 
-			b := mockBully("1", "127.0.0.1", "1")
+			b := mockBully("1", "1", "127.0.0.1")
 			assert.NotPanics(t, func() { b.Connect(tc.mockProto, tc.mockPeers) })
 		})
 	}
@@ -325,7 +334,7 @@ func TestBully_Send(t *testing.T) {
 		},
 	}
 
-	ms, err := mockSocket("127.0.0.1:8400")
+	ms, _, err := mockSocket("127.0.0.1:8400")
 	assert.Nil(t, err)
 	defer func() { _ = ms.Close() }()
 
