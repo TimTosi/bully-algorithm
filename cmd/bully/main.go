@@ -53,8 +53,5 @@ func main() {
 		}
 	}
 
-	if err := <-b.Run(workFunc); err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Shutdown.")
+	b.Run(workFunc)
 }

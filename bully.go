@@ -217,28 +217,23 @@ func (b *Bully) Elect() {
 
 // Run launches the two main goroutine. The first one is tied to the
 // `Bully algorithm` while the other one is the execution of `workFunc`.
-func (b *Bully) Run(workFunc func()) chan error {
-	errChan := make(chan error)
-
-	go func() {
-		b.Elect()
-
-		for msg := range b.receiveChan {
-			if msg.Type == ELECTION {
-				if msg.PeerID < b.ID {
-					_ = b.Send(msg.PeerID, msg.Addr, OK)
-					_ = b.Send(msg.PeerID, msg.Addr, COORDINATOR)
-				} else {
-					_ = b.Send(msg.PeerID, msg.Addr, OK)
-					b.Elect()
-				}
-			} else if msg.Type == COORDINATOR {
-				b.SetCoordinator(msg.PeerID)
-			}
-		}
-	}()
-
+//
+// NOTE: This function is an infinite loop.
+func (b *Bully) Run(workFunc func()) {
 	go workFunc()
 
-	return errChan
+	b.Elect()
+	for msg := range b.receiveChan {
+		if msg.Type == ELECTION {
+			if msg.PeerID < b.ID {
+				_ = b.Send(msg.PeerID, msg.Addr, OK)
+				_ = b.Send(msg.PeerID, msg.Addr, COORDINATOR)
+			} else {
+				_ = b.Send(msg.PeerID, msg.Addr, OK)
+				b.Elect()
+			}
+		} else if msg.Type == COORDINATOR {
+			b.SetCoordinator(msg.PeerID)
+		}
+	}
 }
