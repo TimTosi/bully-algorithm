@@ -356,7 +356,7 @@ func TestBully_Elect(t *testing.T) {
 		mockCoordinator     string
 		mockAddr            string
 		mockPeers           map[string]string
-		mockPeerGreater     bool
+		expectedMessageType int
 		expectedCoordinator string
 	}{
 		{
@@ -367,7 +367,7 @@ func TestBully_Elect(t *testing.T) {
 			map[string]string{
 				"2": "127.0.0.1:8512",
 			},
-			true,
+			ELECTION,
 			"2",
 		},
 		{
@@ -380,7 +380,7 @@ func TestBully_Elect(t *testing.T) {
 				"2": "127.0.0.1:8512",
 				"3": "127.0.0.1:8513",
 			},
-			false,
+			COORDINATOR,
 			"5",
 		},
 	}
@@ -395,26 +395,17 @@ func TestBully_Elect(t *testing.T) {
 			defer func() { _ = b.Close() }()
 			b.Connect("tcp4", tc.mockPeers)
 
-			if tc.mockPeerGreater {
+			if tc.expectedMessageType == ELECTION {
 				b.electionChan <- Message{}
-				b.Elect()
+			}
+			b.Elect()
 
-				select {
-				case msg := <-msgChan:
-					assert.Equal(t, ELECTION, msg.Type)
-					break
-				case <-time.After(1 * time.Second):
-					t.Fail()
-				}
-			} else {
-				b.Elect()
-
-				select {
-				case msg := <-msgChan:
-					assert.Equal(t, COORDINATOR, msg.Type)
-				case <-time.After(3 * time.Second):
-					t.Fail()
-				}
+			select {
+			case msg := <-msgChan:
+				assert.Equal(t, tc.expectedMessageType, msg.Type)
+				break
+			case <-time.After(3 * time.Second):
+				t.Fail()
 			}
 			assert.Equal(t, tc.expectedCoordinator, b.coordinator)
 		})
