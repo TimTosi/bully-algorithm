@@ -23,9 +23,15 @@ install:
 
 # Build project binaries.
 .PHONY: build
-build:
+build:	lint
 		cd cmd/bully && go build -o bully
 		cd cmd/data-viz && go build -o data-viz
+
+# Build project Docker images for dev environment.
+.PHONY: docker-build
+docker-build: lint
+		sudo docker build -t timtosi/bully:local build/docker/bully/
+		sudo docker build -t timtosi/data-viz:local build/docker/data-viz/
 
 # Runs linter against the service codebase.
 #
