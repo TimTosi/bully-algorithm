@@ -45,3 +45,8 @@ lint:
 .PHONY: test
 test: lint
 		go test -tags integration -race -cover -timeout=120s $$(glide novendor)
+
+# Run project locally.
+.PHONY: run
+run:
+		sudo docker-compose -f deployments/docker-compose.yaml up
