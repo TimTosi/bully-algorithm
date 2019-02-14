@@ -23,14 +23,18 @@ install:
 
 # Build project binaries.
 .PHONY: build
-build:	lint
-		cd cmd/bully && go build -o bully
-		cd cmd/data-viz && go build -o data-viz
+build:	test
+		cd cmd/bully && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o bully
+		cd cmd/data-viz && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o data-viz
 
 # Build project Docker images for dev environment.
 .PHONY: docker-build
-docker-build: lint
-		sudo docker build -t timtosi/bully:local build/docker/bully/
+docker-build: build
+		cp cmd/bully/conf/bully.conf.yaml build/docker/bully/ && \
+		cp cmd/bully/bully build/docker/bully/ && \
+		sudo docker build -t timtosi/bully:local build/docker/bully/ && \
+		cp cmd/data-viz/data-viz build/docker/data-viz/ && \
+		cp -r cmd/data-viz/assets build/docker/data-viz/ && \
 		sudo docker build -t timtosi/data-viz:local build/docker/data-viz/
 
 # Runs linter against the service codebase.
