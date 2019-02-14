@@ -5,3 +5,4 @@ cmd/data-viz/data-viz
 build/docker/bully/bully
 build/docker/bully/bully.conf.yaml
 build/docker/data-viz/data-viz
+build/docker/data-viz/assets
