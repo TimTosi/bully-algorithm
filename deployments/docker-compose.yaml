@@ -1,9 +1,80 @@
 version: '3.1'
 services:
+    bully-00:
+        image: timtosi/bully:local
+        cap_drop:
+            - ALL
+        entrypoint:
+            - /bully
+        command:
+            - "0"
+        hostname: bully-00
+        ports:
+            - "9990:9990"
+
     bully-01:
         image: timtosi/bully:local
+        cap_drop:
+            - ALL
         entrypoint:
             - /bully
         command:
             - "1"
         hostname: bully-01
+        ports:
+            - "9991:9991"
+        depends_on:
+            - bully-00
+
+    bully-02:
+        image: timtosi/bully:local
+        cap_drop:
+            - ALL
+        entrypoint:
+            - /bully
+        command:
+            - "2"
+        hostname: bully-02
+        ports:
+            - "9992:9992"
+        depends_on:
+            - bully-01
+
+    bully-03:
+        image: timtosi/bully:local
+        cap_drop:
+            - ALL
+        entrypoint:
+            - /bully
+        command:
+            - "3"
+        hostname: bully-03
+        ports:
+            - "9993:9993"
+        depends_on:
+            - bully-02
+
+    bully-04:
+        image: timtosi/bully:local
+        cap_drop:
+            - ALL
+        entrypoint:
+            - /bully
+        command:
+            - "4"
+        hostname: bully-04
+        ports:
+            - "9994:9994"
+        depends_on:
+            - bully-03
+
+    data-viz:
+        image: timtosi/data-viz:local
+        cap_drop:
+            - ALL
+        entrypoint:
+            - /data-viz
+        hostname: data-viz
+        ports:
+            - "8080:8080"
+            - "8081:8081"
