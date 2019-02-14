@@ -2,24 +2,11 @@
 
 # ------------------------------------------------------------------------------
 
-# Builder Image.
-FROM golang:1.11.5-alpine3.9 AS builder
-
-# Install dependencies.
-RUN apk update && apk add --no-cache git
-
-# Retrieve source files.
-RUN go get -d -v github.com/timtosi/bully-algorithm
+# Builder Image using golang:1.11.5-alpine3.9.
+FROM golang@sha256:a6435c88400d0d25955ccdea235d2b2bd72650bbab45e102e4ae31a0359dbfb2 AS builder
 
 # Create non-root user.
 RUN adduser -D -g '' appuser
-
-# Define working directory.
-WORKDIR $GOPATH/src/github.com/timtosi/bully-algorithm/
-
-# Build static binary.
-RUN cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/bully/ && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/bully
 
 # ------------------------------------------------------------------------------
 
@@ -27,14 +14,14 @@ RUN cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/bully/ && \
 FROM scratch
 LABEL maintainer="timothee.tosi@gmail.com"
 
+# Copy configuration file.
+COPY ./bully.conf.yaml /bully.conf.yaml
+
 # Copy service binary.
-COPY --from=builder /go/bin/bully /bully
+COPY ./bully /bully
 
 # Import the user and group files from the builder.
 COPY --from=builder /etc/passwd /etc/passwd
-
-# Expose HTTP ports.
-EXPOSE 9990-9999
 
 # Change to non-root user.
 USER appuser
