@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -13,11 +14,18 @@ import (
 
 // makeBully is a helper function which main purpose is code readability.
 func makeBully() (*bully.Bully, error) {
+	peers := viper.GetStringMapString(confPeerAddr)
+
+	addr := strings.Split(peers[os.Args[1]], ":")
+	if len(addr) < 2 {
+		return nil, fmt.Errorf("makeBully: cannot retrieve local address")
+	}
+
 	return bully.NewBully(
 		os.Args[1],
-		viper.GetStringMapString(confPeerAddr)[os.Args[1]],
+		fmt.Sprintf("0.0.0.0:%s", addr[1]),
 		"tcp4",
-		viper.GetStringMapString(confPeerAddr),
+		peers,
 	)
 }
 
@@ -39,6 +47,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	conn, err := getConn()
 	if err != nil {
 		log.Fatal(err)

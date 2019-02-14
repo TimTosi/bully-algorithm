@@ -52,7 +52,8 @@ func NewBully(ID, addr, proto string, peers map[string]string) (*Bully, error) {
 
 // receive is a helper function handling communication between `Peer`s
 // and `b`. It creates a `gob.Decoder` and a from a `io.ReadCloser`. Each
-// `Message` received that is not of type `CLOSE` is pushed to `b.receiveChan`.
+// `Message` received that is not of type `CLOSE` or `OK` is pushed to
+// `b.receiveChan`.
 //
 // NOTE: this function is an infinite loop.
 func (b *Bully) receive(rwc io.ReadCloser) {
@@ -72,7 +73,7 @@ func (b *Bully) receive(rwc io.ReadCloser) {
 			select {
 			case b.electionChan <- msg:
 				continue
-			case <-time.After(10 * time.Millisecond):
+			case <-time.After(200 * time.Millisecond):
 				continue
 			}
 		} else {
@@ -140,7 +141,7 @@ func (b *Bully) Connect(proto string, peers map[string]string) {
 		}
 		if err := b.connect(proto, addr, ID); err != nil {
 			log.Printf("Connect: %v", err)
-			continue
+			b.peers.Delete(ID)
 		}
 	}
 }
@@ -207,16 +208,14 @@ func (b *Bully) Elect() {
 	case <-time.After(time.Second):
 		b.SetCoordinator(b.ID)
 		for _, rBully := range b.peers.PeerData() {
-			if rBully.ID < b.ID {
-				_ = b.Send(rBully.ID, rBully.Addr, COORDINATOR)
-			}
+			_ = b.Send(rBully.ID, rBully.Addr, COORDINATOR)
 		}
 		return
 	}
 }
 
 // Run launches the two main goroutine. The first one is tied to the
-// `Bully algorithm` while the other one is the execution of `workFunc`.
+// execution of `workFunc` while the other one is the `Bully algorithm`.
 //
 // NOTE: This function is an infinite loop.
 func (b *Bully) Run(workFunc func()) {
@@ -224,14 +223,9 @@ func (b *Bully) Run(workFunc func()) {
 
 	b.Elect()
 	for msg := range b.receiveChan {
-		if msg.Type == ELECTION {
-			if msg.PeerID < b.ID {
-				_ = b.Send(msg.PeerID, msg.Addr, OK)
-				_ = b.Send(msg.PeerID, msg.Addr, COORDINATOR)
-			} else {
-				_ = b.Send(msg.PeerID, msg.Addr, OK)
-				b.Elect()
-			}
+		if msg.Type == ELECTION && msg.PeerID < b.ID {
+			_ = b.Send(msg.PeerID, msg.Addr, OK)
+			b.Elect()
 		} else if msg.Type == COORDINATOR {
 			b.SetCoordinator(msg.PeerID)
 		}
