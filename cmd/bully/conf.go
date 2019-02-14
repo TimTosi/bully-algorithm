@@ -18,7 +18,7 @@ var (
 )
 
 func init() {
-	viper.SetDefault(confDataAddr, "127.0.0.1:8081")
+	viper.SetDefault(confDataAddr, "0.0.0.0:8081")
 	viper.SetDefault(confPeerAddr, map[string]string{
 		"0": "0.0.0.0:9990",
 		"1": "0.0.0.0:9991",
@@ -43,6 +43,6 @@ func printConf() {
 	sort.Strings(keys)
 	settings := viper.AllSettings()
 	for _, k := range keys {
-		log.Printf("%v: %+v", k, settings[k])
+		log.Printf("%s: %+v", k, settings[k])
 	}
 }
