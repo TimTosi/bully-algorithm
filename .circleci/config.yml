@@ -23,7 +23,7 @@ jobs:
       - image: circleci/golang:1.11
     working_directory: /go/src/github.com/timtosi/bully-algorithm
     environment:
-      TEST_RESULTS: /tmp/test-results
+      TEST_RESULTS: /tmp/test-results/go-test
     steps:
       - checkout
       - run:
