@@ -1,7 +1,7 @@
 version: '3.1'
 services:
     bully-00:
-        image: timtosi/bully:local
+        image: timtosi/bully:latest
         cap_drop:
             - ALL
         entrypoint:
@@ -13,7 +13,7 @@ services:
             - "9990:9990"
 
     bully-01:
-        image: timtosi/bully:local
+        image: timtosi/bully:latest
         cap_drop:
             - ALL
         entrypoint:
@@ -27,7 +27,7 @@ services:
             - bully-00
 
     bully-02:
-        image: timtosi/bully:local
+        image: timtosi/bully:latest
         cap_drop:
             - ALL
         entrypoint:
@@ -41,7 +41,7 @@ services:
             - bully-01
 
     bully-03:
-        image: timtosi/bully:local
+        image: timtosi/bully:latest
         cap_drop:
             - ALL
         entrypoint:
@@ -55,7 +55,7 @@ services:
             - bully-02
 
     bully-04:
-        image: timtosi/bully:local
+        image: timtosi/bully:latest
         cap_drop:
             - ALL
         entrypoint:
@@ -69,7 +69,7 @@ services:
             - bully-03
 
     data-viz:
-        image: timtosi/data-viz:local
+        image: timtosi/data-viz:latest
         cap_drop:
             - ALL
         entrypoint:

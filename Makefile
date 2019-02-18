@@ -32,10 +32,10 @@ build: lint
 docker-build: build
 		cp cmd/bully/conf/bully.conf.yaml build/docker/bully/ && \
 		cp cmd/bully/bully build/docker/bully/ && \
-		sudo docker build -t timtosi/bully:local build/docker/bully/ && \
+		sudo docker build -t timtosi/bully:latest build/docker/bully/ && \
 		cp cmd/data-viz/data-viz build/docker/data-viz/ && \
 		cp -r cmd/data-viz/assets build/docker/data-viz/ && \
-		sudo docker build -t timtosi/data-viz:local build/docker/data-viz/
+		sudo docker build -t timtosi/data-viz:latest build/docker/data-viz/
 
 # Runs linter against the service codebase.
 #
