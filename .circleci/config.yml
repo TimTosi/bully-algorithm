@@ -11,10 +11,7 @@ jobs:
           command: make install
       - run:
           name: Build binaries
-          command: |
-            make build
-            chmod +x cmd/bully/bully
-            chmod +x cmd/data-viz/data-viz 
+          command: make build
       - persist_to_workspace:
           root: cmd
           paths:
@@ -61,14 +58,14 @@ jobs:
       - run:
           name: Build bully image
           command: |
-            mv /tmp/cmd/bully build/docker/bully/
+            mv /tmp/cmd/bully/bully build/docker/bully/
             cp cmd/bully/conf/bully.conf.yaml build/docker/bully/
             docker build -t timtosi/bully:$DOCKER_IMAGE_TAG build/docker/bully/
             docker build -t timtosi/bully:latest build/docker/bully/
       - run:
           name: Build data-viz image
           command: |
-            mv /tmp/cmd/data-viz build/docker/data-viz/
+            mv /tmp/cmd/data-viz/data-viz build/docker/data-viz/
             cp -r cmd/data-viz/assets build/docker/data-viz/
             docker build -t timtosi/data-viz:$DOCKER_IMAGE_TAG build/docker/data-viz/
             docker build -t timtosi/data-viz:latest build/docker/data-viz/
