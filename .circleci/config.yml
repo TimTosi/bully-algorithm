@@ -46,6 +46,7 @@ jobs:
           path: /tmp/test-results
 
   deploy-image:
+    context: deploy-dockerhub
     machine: true
     working_directory: ~/.go_workspace/src/github.com/timtosi/bully-algorithm
     steps:
@@ -53,8 +54,32 @@ jobs:
       - attach_workspace:
           at: /tmp/cmd
       - run:
-          name: Temporary Fake Deploy
-          command: echo "Ok"
+          name: Log Docker user
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: Build bully image
+          command: |
+            mv /tmp/cmd/bully build/docker/bully/
+            cp cmd/bully/conf/bully.conf.yaml build/docker/bully/
+		        docker build -t timtosi/bully:$DOCKER_IMAGE_TAG build/docker/bully/
+            docker build -t timtosi/bully:latest build/docker/bully/
+      - run:
+          name: Build data-viz image
+          command: |
+            mv /tmp/cmd/data-viz build/docker/data-viz/
+		        cp -r cmd/data-viz/assets build/docker/data-viz/
+            docker build -t timtosi/data-viz:$DOCKER_IMAGE_TAG build/docker/data-viz/
+            docker build -t timtosi/data-viz:latest build/docker/data-viz/
+      - run:
+          name: Push bully images to Docker Hub
+          command: |
+            docker push timtosi/bully:$DOCKER_IMAGE_TAG
+            docker push timtosi/bully:latest
+      - run:
+          name: Push data-viz images to Docker Hub
+          command: |
+            docker push timtosi/data-viz:$DOCKER_IMAGE_TAG
+            docker push timtosi/data-viz:latest
 
 workflows:
   version: 2
