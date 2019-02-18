@@ -60,7 +60,6 @@ jobs:
           command: |
             mv /tmp/cmd/bully build/docker/bully/
             cp cmd/bully/conf/bully.conf.yaml build/docker/bully/
-            chmod +x build/docker/bully/bully
             docker build -t timtosi/bully:$DOCKER_IMAGE_TAG build/docker/bully/
             docker build -t timtosi/bully:latest build/docker/bully/
       - run:
@@ -68,7 +67,6 @@ jobs:
           command: |
             mv /tmp/cmd/data-viz build/docker/data-viz/
             cp -r cmd/data-viz/assets build/docker/data-viz/
-            chmod +x build/docker/data-viz/data-viz
             docker build -t timtosi/data-viz:$DOCKER_IMAGE_TAG build/docker/data-viz/
             docker build -t timtosi/data-viz:latest build/docker/data-viz/
       - run:
