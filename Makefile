@@ -23,7 +23,7 @@ install:
 
 # Build project binaries.
 .PHONY: build
-build:	test
+build: lint
 		cd cmd/bully && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o bully
 		cd cmd/data-viz && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o data-viz
 
@@ -48,7 +48,7 @@ lint:
 # Runs test suite.
 .PHONY: test
 test: lint
-		go test -tags integration -race -cover -timeout=120s $$(glide novendor)
+		go test -v -tags integration -race -cover -timeout=120s $$(glide novendor)
 
 # Run project locally.
 .PHONY: run
