@@ -1,5 +1,6 @@
 .vscode
 coverage.out
+coverage.txt
 cmd/bully/bully
 cmd/data-viz/data-viz
 build/docker/bully/bully
