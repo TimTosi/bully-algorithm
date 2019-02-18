@@ -27,6 +27,9 @@ COPY --from=builder /etc/passwd /etc/passwd
 # Change to non-root user.
 USER appuser
 
+# Change working directory.
+WORKDIR /
+
 # Define entrypoint
 ENTRYPOINT [ "/bully" ]
 

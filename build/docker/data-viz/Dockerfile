@@ -36,5 +36,8 @@ EXPOSE 8080-8081
 # Change to non-root user.
 USER appuser
 
+# Change working directory.
+WORKDIR /
+
 # Define entrypoint
 ENTRYPOINT [ "/data-viz" ]
