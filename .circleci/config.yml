@@ -28,7 +28,7 @@ jobs:
       - checkout
       - run:
           name: Set test metadata requirements
-          commmand: |
+          command: |
             mkdir -p $TEST_RESULTS
             go get github.com/jstemmer/go-junit-report
       - run:
