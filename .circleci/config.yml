@@ -39,6 +39,9 @@ jobs:
           command: |
               trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
               make test | tee ${TEST_RESULTS}/go-test.out
+      - run:
+          name: Upload coverage file
+          command: bash <(curl -s https://codecov.io/bash)
       - store_artifacts:
           path: /tmp/test-results
           destination: raw-test-output
