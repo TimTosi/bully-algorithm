@@ -20,7 +20,6 @@ LABEL maintainer="timothee.tosi@gmail.com"
 
 # Copy service binary.
 COPY ./data-viz /data-viz
-RUN chmod 700 /data-viz
 
 # Copy web assets.
 COPY ./assets /assets
