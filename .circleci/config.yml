@@ -46,7 +46,6 @@ jobs:
           path: /tmp/test-results
 
   deploy-image:
-    context: deploy-dockerhub
     machine: true
     working_directory: ~/.go_workspace/src/github.com/timtosi/bully-algorithm
     steps:
@@ -88,6 +87,7 @@ workflows:
       - run-test
       - build
       - deploy-image:
+          context: deploy-dockerhub
           requires:
             - run-test
             - build
