@@ -425,5 +425,7 @@ func TestBully_Elect(t *testing.T) {
 
 func TestMain(m *testing.M) {
 	log.SetOutput(ioutil.Discard)
+	defer log.SetOutput(os.Stderr)
+
 	os.Exit(m.Run())
 }
