@@ -61,7 +61,7 @@ jobs:
           command: |
             mv /tmp/cmd/bully build/docker/bully/
             cp cmd/bully/conf/bully.conf.yaml build/docker/bully/
-		        docker build -t timtosi/bully:$DOCKER_IMAGE_TAG build/docker/bully/
+            docker build -t timtosi/bully:$DOCKER_IMAGE_TAG build/docker/bully/
             docker build -t timtosi/bully:latest build/docker/bully/
       - run:
           name: Build data-viz image
