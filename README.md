@@ -1,6 +1,7 @@
 # Bully Algorithm Visualization
 
 [![GoDoc](https://godoc.org/github.com/timtosi/bully-algorithm?status.svg)](https://godoc.org/github.com/timtosi/bully-algorithm)
+[![codecov](https://codecov.io/gh/TimTosi/bully-algorithm/branch/master/graph/badge.svg)](https://codecov.io/gh/TimTosi/bully-algorithm)
 [![Go Report Card](https://goreportcard.com/badge/github.com/timtosi/bully-algorithm)](https://goreportcard.com/report/github.com/timtosi/bully-algorithm)
 
 
