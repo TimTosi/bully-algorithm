@@ -26,13 +26,16 @@ jobs:
       TEST_RESULTS: /tmp/test-results
     steps:
       - checkout
-      - run: mkdir -p $TEST_RESULTS
-      - run: go get github.com/jstemmer/go-junit-report
+      - run:
+          name: Set test metadata requirements
+          commmand: |
+            mkdir -p $TEST_RESULTS
+            go get github.com/jstemmer/go-junit-report
       - run:
           name: Install dependencies
           command: make install
       - run:
-          name: Run unit tests
+          name: Run test suite
           command: |
               trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
               make test | tee ${TEST_RESULTS}/go-test.out
