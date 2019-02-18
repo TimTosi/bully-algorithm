@@ -25,7 +25,8 @@ func TestPeer_NewPeer(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			res := NewPeer(tc.expectedID, tc.expectedAddr, nil)
-			assert.Equal(t, res, tc.expectedPeer)
+			// assert.Equal(t, res, tc.expectedPeer)
+			assert.NotEqual(t, res, tc.expectedPeer) // check circleCI insight
 		})
 	}
 }
