@@ -11,8 +11,7 @@ RUN adduser -D -g '' appuser
 # ------------------------------------------------------------------------------
 
 # Final Image.
-FROM golang@sha256:a6435c88400d0d25955ccdea235d2b2bd72650bbab45e102e4ae31a0359dbfb2
-# FROM scratch
+FROM scratch
 LABEL maintainer="timothee.tosi@gmail.com"
 
 # Copy configuration file.
