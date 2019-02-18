@@ -3,8 +3,10 @@ package bully
 import (
 	"encoding/gob"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
+	"os"
 	"sync"
 	"testing"
 	"time"
@@ -419,4 +421,9 @@ func TestBully_Elect(t *testing.T) {
 			assert.Equal(t, tc.expectedCoordinator, b.coordinator)
 		})
 	}
+}
+
+func TestMain(m *testing.M) {
+	log.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
 }
