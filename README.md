@@ -13,7 +13,8 @@
 - [Bully Algorithm](#what-is-the-bully-algorithm-?)
 - [Quickstart with Docker](#with-docker)
 - [Quickstart with binaries](#compiling-binaries)
-- [FAQ]
+- [FAQ](#faq)
+- [Support & Feedbacks](#not-good-enough-?)
 
 
 ## What this repository is about ?
@@ -54,7 +55,7 @@ cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/bully
 go build && ./bully 0
 ```
 
-> **/!\ If you launch this project through binaries**: IDs should by default
+> **:exclamation: If you launch this project through binaries**: IDs should by default
 > be comprised between 0 to 4 but you should be able to update
 > [peer address default configuration](https://github.com/TimTosi/bully-algorithm/blob/master/cmd/bully/conf.go#L23-L27) easily.
 
@@ -63,6 +64,9 @@ go build && ./bully 0
 
 You can access the visualization through your browser at `localhost:8080`.
 
+## FAQ
+
+None so far :raised_hands:
 
 ## License
 
