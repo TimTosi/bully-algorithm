@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 
-![Intro](assets/intro.gif)
+![Intro](assets/intro.gif=500x)
 
 ## Table of Contents
 - [About](#what-this-repository-is-about-?)
