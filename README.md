@@ -7,6 +7,14 @@
 
 ![Intro](assets/intro.gif)
 
+## Table of Contents
+- [About](#what-this-repository-is-about-?)
+- [Bully Algorithm](#what-is-the-bully-algorithm-?)
+- [Quickstart with Docker](#with-docker)
+- [Quickstart with binaries](#compiling-binaries)
+- [FAQ]
+
+
 ## What this repository is about ?
 
 This repository contains source code of an implementation of the bully algorithm
@@ -17,12 +25,19 @@ This has been made for learning purposes about [distributed algorithms](https://
 Finally, I feel like implementing an algorithm myself helps me to understands it
 better and I thought it could be interesting to someone else.
 
+## What is the Bully algorithm ?
+
+The [Bully algorithm](https://en.wikipedia.org/wiki/Bully_algorithm) is one of
+the simplest algorithm made to design a coordinator among a set of machines.
+
 ## Quickstart
 
 First, go get this repository:
 ```golang
 go get -d github.com/timtosi/bully-algorithm
 ```
+
+
 
 Then compiles and launch the visualization server:
 ```golang
@@ -32,20 +47,21 @@ go build && ./data-viz
 
 ![Visu](assets/run-visu.gif)
 
-Finally launch two nodes with specifying their ID in argument:
+Finally launch at least two nodes with specifying their ID in argument:
 ```golang
 cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/bully
 go build && ./bully 0
 ```
 
+> **/!\ If you launch this project through binaries**: IDs should by default
+> be comprised between 0 to 4 but you should be able to update
+> [peer address default configuration](https://github.com/TimTosi/bully-algorithm/blob/master/cmd/bully/conf.go#L23-L27) easily.
+
+
 ![Nodes](assets/run-nodes.gif)
 
 You can access the visualization through your browser at `localhost:8080`.
 
-## What is the Bully algorithm ?
-
-The [Bully algorithm](https://en.wikipedia.org/wiki/Bully_algorithm) is one of
-the simplest algorithm made to design a coordinator among a set of machines.
 
 ## License
 
