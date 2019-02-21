@@ -21,14 +21,14 @@
 
 ## Table of Contents
 - [About](#what-this-repository-is-about)
-- [Bully Algorithm](#what-is-the-bully-algorithm)
+- [Bully Algorithm](#what-is-the-bully-algorithm-)
 - [Quickstart with Docker](#quickstart-with-docker)
 - [Quickstart with binaries](#quickstart-without-docker)
 - [FAQ](#faq)
-- [Support & Feedbacks](#not-good-enough)
+- [Support & Feedbacks](#not-good-enough-)
 
 
-## What this repository is about ?
+## What this repository is about
 
 This repository contains source code of an implementation of the bully algorithm
 written in Go and a small browser visualization tool.
