@@ -9,12 +9,12 @@
 ![](assets/intro.gif | width=500)
 
 ## Table of Contents
-- [About](#what-this-repository-is-about-?)
-- [Bully Algorithm](#what-is-the-bully-algorithm-?)
-- [Quickstart with Docker](#with-docker)
-- [Quickstart with binaries](#compiling-binaries)
+- [About](#what-this-repository-is-about)
+- [Bully Algorithm](#what-is-the-bully-algorithm)
+- [Quickstart with Docker](#quickstart-with-docker)
+- [Quickstart with binaries](#quickstart-without-docker)
 - [FAQ](#faq)
-- [Support & Feedbacks](#not-good-enough-?)
+- [Support & Feedbacks](#not-good-enough)
 
 
 ## What this repository is about ?
@@ -27,10 +27,12 @@ This has been made for learning purposes about [distributed algorithms](https://
 Finally, I feel like implementing an algorithm myself helps me to understands it
 better and I thought it could be interesting to someone else.
 
+
 ## What is the Bully algorithm ?
 
 The [Bully algorithm](https://en.wikipedia.org/wiki/Bully_algorithm) is one of
 the simplest algorithm made to design a coordinator among a set of machines.
+
 
 ## Quickstart
 
@@ -39,9 +41,19 @@ First, go get this repository:
 go get -d github.com/timtosi/bully-algorithm
 ```
 
+### Quickstart with Docker
+
+> :exclamation:
+
+> :bulb: If you want to update the number of node or change some IDs you will
+> have to update the [configuration file](https://github.com/TimTosi/bully-algorithm/blob/master/cmd/bully/conf/bully.conf.yaml#L14-L19)
+> and the [Docker Compose file](https://github.com/TimTosi/bully-algorithm/blob/master/deployments/docker-compose.yaml)
+> accordingly.
 
 
-Then compiles and launch the visualization server:
+### Quickstart without Docker
+
+Compiles and launch the visualization server:
 ```golang
 cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/data-viz
 go build && ./data-viz
@@ -49,28 +61,31 @@ go build && ./data-viz
 
 ![Visu](assets/run-visu.gif)
 
-Finally launch at least two nodes with specifying their ID in argument:
+Then launch at least two nodes with specifying their ID in argument:
 ```golang
 cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/bully
 go build && ./bully 0
 ```
 
-> **:exclamation: If you launch this project through binaries**: IDs should by default
-> be comprised between 0 to 4 but you should be able to update
-> [peer address default configuration](https://github.com/TimTosi/bully-algorithm/blob/master/cmd/bully/conf.go#L23-L27) easily.
+> :bulb: IDs should by default be comprised between 0 to 4 but you should be
+> able to update [peer address default configuration](https://github.com/TimTosi/bully-algorithm/blob/master/cmd/bully/conf.go#L23-L27)
+> easily.
 
 
 ![Nodes](assets/run-nodes.gif)
 
 You can access the visualization through your browser at `localhost:8080`.
 
+
 ## FAQ
 
 None so far :raised_hands:
 
+
 ## License
 
 Every file provided here is available under the [MIT License](http://opensource.org/licenses/MIT).
+
 
 ## Not Good Enough ?
 
