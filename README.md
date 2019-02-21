@@ -6,7 +6,7 @@
 [![GoDoc](https://godoc.org/github.com/timtosi/bully-algorithm?status.svg)](https://godoc.org/github.com/timtosi/bully-algorithm)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-<img src="assets/intro.gif" alt="intro logo" width="500" />
+<p align="center"><img src="assets/intro.gif" alt="intro logo" width="500" /></p>
 
 ## Table of Contents
 - [About](#what-this-repository-is-about)
