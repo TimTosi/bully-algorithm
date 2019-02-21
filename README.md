@@ -1,8 +1,8 @@
 # Bully Algorithm Visualization
 
 [![codecov](https://codecov.io/gh/TimTosi/bully-algorithm/branch/master/graph/badge.svg)](https://codecov.io/gh/TimTosi/bully-algorithm)
-[![Go Report Card](https://goreportcard.com/badge/github.com/timtosi/bully-algorithm)](https://goreportcard.com/report/github.com/timtosi/bully-algorithm)
 [![CircleCI](https://circleci.com/gh/TimTosi/bully-algorithm.svg?style=shield)](https://circleci.com/gh/TimTosi/bully-algorithm)
+[![Go Report Card](https://goreportcard.com/badge/github.com/timtosi/bully-algorithm)](https://goreportcard.com/report/github.com/timtosi/bully-algorithm)
 [![GoDoc](https://godoc.org/github.com/timtosi/bully-algorithm?status.svg)](https://godoc.org/github.com/timtosi/bully-algorithm)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
@@ -38,7 +38,7 @@ the simplest algorithm made to design a coordinator among a set of machines.
 ## Quickstart
 
 First, go get this repository:
-```golang
+```sh
 go get -d github.com/timtosi/bully-algorithm
 ```
 
@@ -48,6 +48,19 @@ go get -d github.com/timtosi/bully-algorithm
 > [Docker Compose](https://docs.docker.com/compose/) installed, you still can
 > execute this program by [compiling the binaries](#quickstart-without-docker). 
 
+This program comes with an already configured [Docker Compose](https://github.com/TimTosi/bully-algorithm/blob/master/deployments/docker-compose.yaml)
+file launching five nodes and the browser based user interface.
+
+You can use the Makefile to use it easily:
+```sh
+make run
+```
+
+// PUT ASCIINEMA HERE
+
+You can access the visualization through your browser at `localhost:8080`.
+If you want to test the cluster behaviour, you can stop and resume some of the
+nodes with docker commands.
 
 
 
@@ -59,8 +72,8 @@ go get -d github.com/timtosi/bully-algorithm
 
 ### Quickstart without Docker
 
-Compiles and launch the visualization server:
-```golang
+First compiles and launch the visualization server:
+```sh
 cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/data-viz
 go build && ./data-viz
 ```
@@ -68,7 +81,7 @@ go build && ./data-viz
 ![Visu](assets/run-visu.gif)
 
 Then launch at least two nodes with specifying their ID in argument:
-```golang
+```sh
 cd $GOPATH/src/github.com/timtosi/bully-algorithm/cmd/bully
 go build && ./bully 0
 ```
