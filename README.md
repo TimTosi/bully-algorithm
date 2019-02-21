@@ -2,11 +2,21 @@
 
 <p align="center"><img src="assets/intro.gif" alt="intro logo" width="500" /></p>
 <p align="center">
-    <img src="https://codecov.io/gh/TimTosi/bully-algorithm/branch/master/graph/badge.svg" alt="codecov" />
-    <img src="https://circleci.com/gh/TimTosi/bully-algorithm.svg?style=shield" alt="CircleCI" />
-    <img src="https://goreportcard.com/badge/github.com/timtosi/bully-algorithm" alt="Go Report" />
-    <img src="https://godoc.org/github.com/timtosi/bully-algorithm?status.svg" alt="GoDoc" />
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
+    <a href="https://codecov.io/gh/TimTosi/bully-algorithm">
+        <img src="https://codecov.io/gh/TimTosi/bully-algorithm/branch/master/graph/badge.svg" alt="codecov" />
+    </a>
+    <a href="https://circleci.com/gh/TimTosi/bully-algorithm">
+        <img src="https://circleci.com/gh/TimTosi/bully-algorithm.svg?style=shield" alt="CircleCI" />
+    </a>
+    <a href="https://goreportcard.com/report/github.com/timtosi/bully-algorithm">
+        <img src="https://goreportcard.com/badge/github.com/timtosi/bully-algorithm" alt="Go Report" />
+    </a>
+    <a href="https://godoc.org/github.com/timtosi/bully-algorithm">
+        <img src="https://godoc.org/github.com/timtosi/bully-algorithm?status.svg" alt="GoDoc" />
+    </a>
+    <a href="https://opensource.org/licenses/MIT">
+        <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
+    </a>
 </p>
 
 ## Table of Contents
