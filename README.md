@@ -1,12 +1,12 @@
 <h1 align="center">Bully Algorithm Visualization</h1>
 
-<p align="center"><img src="assets/intro.gif" alt="intro logo" width="500" /></p>
-
 [![codecov](https://codecov.io/gh/TimTosi/bully-algorithm/branch/master/graph/badge.svg)](https://codecov.io/gh/TimTosi/bully-algorithm)
 [![CircleCI](https://circleci.com/gh/TimTosi/bully-algorithm.svg?style=shield)](https://circleci.com/gh/TimTosi/bully-algorithm)
 [![Go Report Card](https://goreportcard.com/badge/github.com/timtosi/bully-algorithm)](https://goreportcard.com/report/github.com/timtosi/bully-algorithm)
 [![GoDoc](https://godoc.org/github.com/timtosi/bully-algorithm?status.svg)](https://godoc.org/github.com/timtosi/bully-algorithm)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+<p align="center"><img src="assets/intro.gif" alt="intro logo" width="500" /></p>
 
 ## Table of Contents
 - [About](#what-this-repository-is-about)
