@@ -51,10 +51,7 @@ go get -d github.com/timtosi/bully-algorithm
 This program comes with an already configured [Docker Compose](https://github.com/TimTosi/bully-algorithm/blob/master/deployments/docker-compose.yaml)
 file launching five nodes and the browser based user interface.
 
-You can use the Makefile to use it easily:
-```sh
-make run
-```
+You can use the `run` target in the provided Makefile to use it easily:
 
 [![asciicast](https://asciinema.org/a/228925.svg)](https://asciinema.org/a/228925)
 
