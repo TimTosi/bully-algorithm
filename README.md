@@ -43,7 +43,12 @@ go get -d github.com/timtosi/bully-algorithm
 
 ### Quickstart with Docker
 
-> :exclamation:
+> :exclamation: If you don't have [Docker](https://docs.docker.com/install/) and
+> [Docker Compose](https://docs.docker.com/compose/) installed, you still can
+> execute this program by [compiling the binaries](#quickstart-without-docker). 
+
+
+
 
 > :bulb: If you want to update the number of node or change some IDs you will
 > have to update the [configuration file](https://github.com/TimTosi/bully-algorithm/blob/master/cmd/bully/conf/bully.conf.yaml#L14-L19)
