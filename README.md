@@ -56,13 +56,11 @@ You can use the Makefile to use it easily:
 make run
 ```
 
-// PUT ASCIINEMA HERE
+[![asciicast](https://asciinema.org/a/228925.svg)](https://asciinema.org/a/228925)
 
 You can access the visualization through your browser at `localhost:8080`.
 If you want to test the cluster behaviour, you can stop and resume some of the
 nodes with docker commands.
-
-
 
 > :bulb: If you want to update the number of node or change some IDs you will
 > have to update the [configuration file](https://github.com/TimTosi/bully-algorithm/blob/master/cmd/bully/conf/bully.conf.yaml#L14-L19)
