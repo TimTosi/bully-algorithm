@@ -7,6 +7,13 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 <p align="center"><img src="assets/intro.gif" alt="intro logo" width="500" /></p>
+<p align="center">
+    <img src="https://codecov.io/gh/TimTosi/bully-algorithm/branch/master/graph/badge.svg" alt="intro logo" />
+    <img src="https://circleci.com/gh/TimTosi/bully-algorithm.svg?style=shield" alt="intro logo" />
+    <img src="https://goreportcard.com/badge/github.com/timtosi/bully-algorithm" alt="intro logo" />
+    <img src="https://godoc.org/github.com/timtosi/bully-algorithm?status.svg" alt="intro logo" />
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="intro logo" />
+</p>
 
 ## Table of Contents
 - [About](#what-this-repository-is-about)
